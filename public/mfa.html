@@ -1,0 +1,53 @@
+<!-- public/mfa.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TechStore - Verificación MFA</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a2e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .mfa-card { background: #161623; padding: 30px; border-radius: 10px; width: 350px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 15px 0; text-align: center; font-size: 18px; letter-spacing: 5px; border-radius: 5px; border: none; }
+        button { width: 100%; padding: 10px; background: #00b894; border: none; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .error { color: #ff7675; margin-top: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="mfa-card">
+        <h2>Código de Seguridad</h2>
+        <p style="font-size: 14px; color: #b2bec3;">Se ha enviado un código de 6 dígitos. (Revisa la terminal de VS Code de tu servidor)</p>
+        <div id="errorMessage" class="error"></div>
+        
+        <input type="text" id="mfaCode" placeholder="000000" maxlength="6">
+        <button onclick="verifyMfa()">Verificar y Entrar</button>
+    </div>
+
+    <script>
+        async function verifyMfa() {
+            const email = localStorage.getItem('temp_email');
+            const code = document.getElementById('mfaCode').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            const response = await fetch('/api/auth/verify-mfa', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, code })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Guardamos los datos reales entregados por nuestro JWT
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user_role', data.user.role);
+                localStorage.setItem('user_name', data.user.fullName);
+                localStorage.setItem('user_store', data.user.store);
+                
+                window.location.href = '/dashboard.html'; // ¡Logueado!
+            } else {
+                errorDiv.innerText = data.message;
+            }
+        }
+    </script>
+</body>
+</html>

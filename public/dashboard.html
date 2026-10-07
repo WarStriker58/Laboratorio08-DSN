@@ -1,0 +1,86 @@
+<!-- public/dashboard.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TechStore - Panel de Control</title>
+    <style>
+        body { font-family: sans-serif; background: #0f0f1a; color: #fff; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e1e30; padding-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .card { background: #161625; padding: 20px; border-radius: 8px; border-left: 5px solid #6c5ce7; }
+        .restricted-zone { margin-top: 30px; background: #11111e; padding: 20px; border-radius: 8px; }
+        button { padding: 8px 15px; background: #e17055; border: none; color: white; border-radius: 5px; cursor: pointer; }
+        .badge { background: #00b894; padding: 3px 8px; border-radius: 3px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>TechStore <span style="font-size: 18px; color:#b2bec3;">Gestión de Inventario</span></h1>
+            <p>Bienvenido, <strong id="lblProfile">Cargando...</strong> | Tienda: <span id="lblStore">...</span></p>
+        </div>
+        <button onclick="logout()">Cerrar Sesión</button>
+    </div>
+
+    <!-- Métrica rápida simulando el Dashboard de tu compañero -->
+    <div class="grid">
+        <div class="card"><h3>12 Productos</h3><p>Referencias activas</p></div>
+        <div class="card" style="border-color:#0984e3"><h3>136 Unidades</h3><p>Stock global en almacén</p></div>
+        <div class="card" style="border-color:#d63031"><h3>4 Alertas</h3><p>Productos por reponer</p></div>
+    </div>
+
+    <!-- Sección Dinámica: Cambia según qué rol esté probando -->
+    <div class="restricted-zone">
+        <h2>🔒 Operaciones Disponibles para tu Perfil (<span id="lblRol">...</span>)</h2>
+        <p>El backend ha habilitado las siguientes acciones de acuerdo a tus privilegios:</p>
+        <div id="actionsContainer" style="line-height: 2;">
+            <!-- Las acciones aparecerán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        // Leer sesión local
+        const role = localStorage.getItem('user_role');
+        const name = localStorage.getItem('user_name');
+        const store = localStorage.getItem('user_store');
+
+        if (!role) { window.location.href = '/index.html'; }
+
+        document.getElementById('lblProfile').innerText = name;
+        document.getElementById('lblStore').innerText = store;
+        document.getElementById('lblRol').innerText = role;
+
+        const container = document.getElementById('actionsContainer');
+
+        // Renderizado inteligente según el perfil del Laboratorio
+        if (role === "Administrador del Sistema") {
+            container.innerHTML = `
+                <p>✅ <strong>Configuración del Sistema:</strong> Acceso total a base de datos y logs globales.</p>
+                <p>✅ <strong>Gestión de Usuarios:</strong> Puedes crear, editar y eliminar cuentas y roles.</p>
+            `;
+        } else if (role === "Gerente de Tienda") {
+            container.innerHTML = `
+                <p>✅ <strong>Catálogo Local:</strong> Administrando productos exclusivos de la sucursal <u>${store}</u>.</p>
+                <p>❌ <strong>Restricción:</strong> Bloqueada la eliminación de productos en otras tiendas.</p>
+            `;
+        } else if (role === "Empleado de Ventas") {
+            container.innerHTML = `
+                <p>✅ <strong>Consulta:</strong> Vista de catálogo en tiempo real habilitada.</p>
+                <p>✅ <strong>Actualización de Stock:</strong> Modificación de existencias por venta directa permitida.</p>
+                <p>❌ <strong>Restricción de Precios:</strong> Tu rol no posee permisos para modificar precios.</p>
+            `;
+        } else if (role === "Auditor") {
+            container.innerHTML = `
+                <p>✅ <strong>Solo Lectura:</strong> Descarga de reportes financieros e historial de inventarios activa.</p>
+                <p>❌ <strong>Restricción estricta:</strong> Cualquier intento de modificación será rechazado por el backend.</p>
+            `;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>

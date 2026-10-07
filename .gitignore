@@ -1,0 +1,10 @@
+# Dependencias locales (No se suben porque son muy pesadas y se reconstruyen con npm install)
+node_modules/
+
+# Archivos de bloqueo de paquetes locales
+package-lock.json
+
+# Archivos del sistema operativo u ocultos del editor
+.DS_Store
+.vscode/
+*.log

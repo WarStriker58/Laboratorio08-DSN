@@ -1,0 +1,65 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TechStore - Iniciar Sesión</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a2e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-card { background: #161623; padding: 30px; border-radius: 10px; width: 350px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #a29bfe; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #6c5ce7; border: none; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .social-btn { background: #2d3436; margin-top: 5px; }
+        .error { color: #ff7675; text-align: center; font-size: 14px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>TechStore Login</h2>
+        <div id="errorMessage" class="error"></div>
+        
+        <input type="email" id="email" placeholder="Correo electrónico" requiredValue>
+        <input type="password" id="password" placeholder="Contraseña" requiredValue>
+        <button onclick="handleLogin()">Continuar</button>
+
+        <hr style="border-color: #2d3436; margin: 20px 0;">
+        
+        <button class="social-btn" onclick="handleSocial('Google')">Continuar con Google</button>
+        <button class="social-btn" onclick="handleSocial('GitHub')">Continuar con GitHub</button>
+    </div>
+
+    <script>
+        async function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            const response = await fetch('/api/auth/login-step1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Guardamos el email temporalmente para el paso del MFA
+                localStorage.setItem('temp_email', email);
+                window.location.href = '/mfa.html'; // Nos vamos a la pantalla de código
+            } else {
+                errorDiv.innerText = data.message;
+            }
+        }
+
+        function handleSocial(provider) {
+            alert(`Simulando redirección OAuth con ${provider}... Acceso directo concedido como Empleado.`);
+            // Simulación directa guardando un token ficticio para las pruebas de UI
+            localStorage.setItem('user_role', 'Empleado de Ventas');
+            localStorage.setItem('user_name', `Usuario ${provider}`);
+            localStorage.setItem('user_store', 'TechStore Centro');
+            window.location.href = '/dashboard.html';
+        }
+    </script>
+</body>
+</html>
