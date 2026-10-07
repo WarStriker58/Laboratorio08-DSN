@@ -3,23 +3,229 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechStore - Verificación MFA</title>
+
     <style>
-        body { font-family: sans-serif; background: #1a1a2e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .mfa-card { background: #161623; padding: 30px; border-radius: 10px; width: 350px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 15px 0; text-align: center; font-size: 18px; letter-spacing: 5px; border-radius: 5px; border: none; }
-        button { width: 100%; padding: 10px; background: #00b894; border: none; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .error { color: #ff7675; margin-top: 10px; font-size: 14px; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, #1e3a8a 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #0f766e 0%, transparent 35%),
+                #0f172a;
+            color: #1e293b;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .mfa-wrapper {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .mfa-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+            text-align: center;
+        }
+
+        .security-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .mfa-card h1 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            margin: 10px auto 0;
+            max-width: 320px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .code-label {
+            display: block;
+            margin-top: 28px;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        #mfaCode {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #f8fafc;
+            color: #0f172a;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 8px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        #mfaCode::placeholder {
+            color: #cbd5e1;
+            letter-spacing: 6px;
+        }
+
+        #mfaCode:focus {
+            background: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .verify-button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 18px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .verify-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        .verify-button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            text-align: center;
+            font-size: 13px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .error:empty {
+            display: none;
+        }
+
+        .security-note {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .security-note strong {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .techstore-name {
+            margin-top: 20px;
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 480px) {
+            .mfa-card {
+                padding: 30px 24px;
+            }
+
+            .mfa-card h1 {
+                font-size: 23px;
+            }
+
+            #mfaCode {
+                font-size: 21px;
+                letter-spacing: 6px;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <div class="mfa-card">
-        <h2>Código de Seguridad</h2>
-        <p style="font-size: 14px; color: #b2bec3;">Se ha enviado un código de 6 dígitos. (Revisa la terminal de VS Code de tu servidor)</p>
-        <div id="errorMessage" class="error"></div>
-        
-        <input type="text" id="mfaCode" placeholder="000000" maxlength="6">
-        <button onclick="verifyMfa()">Verificar y Entrar</button>
+
+    <div class="mfa-wrapper">
+
+        <div class="mfa-card">
+
+            <div class="security-icon">
+                🔐
+            </div>
+
+            <h1>Verificación de seguridad</h1>
+
+            <p class="subtitle">
+                Se ha enviado un código de 6 dígitos.
+                Ingresa el código para continuar al sistema.
+            </p>
+
+            <div id="errorMessage" class="error"></div>
+
+            <label class="code-label" for="mfaCode">
+                Código de verificación
+            </label>
+
+            <input
+                type="text"
+                id="mfaCode"
+                placeholder="000000"
+                maxlength="6"
+            >
+
+            <button class="verify-button" onclick="verifyMfa()">
+                Verificar y entrar
+            </button>
+
+            <div class="security-note">
+                <strong>🔒 Verificación MFA activa</strong>
+                <br>
+                Esta capa adicional ayuda a proteger tu cuenta.
+            </div>
+
+            <div class="techstore-name">
+                TECHSTORE · SISTEMA DE GESTIÓN DE INVENTARIO
+            </div>
+
+        </div>
+
     </div>
 
     <script>
@@ -42,12 +248,13 @@
                 localStorage.setItem('user_role', data.user.role);
                 localStorage.setItem('user_name', data.user.fullName);
                 localStorage.setItem('user_store', data.user.store);
-                
+
                 window.location.href = '/dashboard.html'; // ¡Logueado!
             } else {
                 errorDiv.innerText = data.message;
             }
         }
     </script>
+
 </body>
 </html>

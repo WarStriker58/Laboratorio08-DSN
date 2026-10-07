@@ -3,30 +3,294 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechStore - Iniciar Sesión</title>
+
     <style>
-        body { font-family: sans-serif; background: #1a1a2e; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-card { background: #161623; padding: 30px; border-radius: 10px; width: 350px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
-        h2 { text-align: center; color: #a29bfe; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #6c5ce7; border: none; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .social-btn { background: #2d3436; margin-top: 5px; }
-        .error { color: #ff7675; text-align: center; font-size: 14px; margin-top: 10px; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, #1e3a8a 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #0f766e 0%, transparent 35%),
+                #0f172a;
+            color: #1e293b;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 15px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .brand p {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 17px;
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #f8fafc;
+            color: #0f172a;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        input:focus {
+            background: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 25px 0 18px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .social-btn:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+        }
+
+        .social-icon {
+            margin-right: 8px;
+            font-weight: 700;
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            text-align: center;
+            font-size: 13px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+        }
+
+        .error:empty {
+            display: none;
+        }
+
+        .security-note {
+            text-align: center;
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .security-note span {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 24px;
+            }
+
+            .brand h1 {
+                font-size: 25px;
+            }
+        }
     </style>
 </head>
-<body>
-    <div class="login-card">
-        <h2>TechStore Login</h2>
-        <div id="errorMessage" class="error"></div>
-        
-        <input type="email" id="email" placeholder="Correo electrónico" requiredValue>
-        <input type="password" id="password" placeholder="Contraseña" requiredValue>
-        <button onclick="handleLogin()">Continuar</button>
 
-        <hr style="border-color: #2d3436; margin: 20px 0;">
-        
-        <button class="social-btn" onclick="handleSocial('Google')">Continuar con Google</button>
-        <button class="social-btn" onclick="handleSocial('GitHub')">Continuar con GitHub</button>
+<body>
+
+    <div class="login-wrapper">
+
+        <div class="login-card">
+
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <h1>TechStore</h1>
+                <p>Sistema de Gestión de Inventario</p>
+            </div>
+
+            <div id="errorMessage" class="error"></div>
+
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">✉</span>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="usuario@techstore.com"
+                        requiredValue
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Ingresa tu contraseña"
+                        requiredValue
+                    >
+                </div>
+            </div>
+
+            <button class="login-button" onclick="handleLogin()">
+                Iniciar sesión
+            </button>
+
+            <div class="divider">
+                <span>O continúa con</span>
+            </div>
+
+            <button class="social-btn" onclick="handleSocial('Google')">
+                <span class="social-icon">G</span>
+                Continuar con Google
+            </button>
+
+            <button class="social-btn" onclick="handleSocial('GitHub')">
+                <span class="social-icon">GH</span>
+                Continuar con GitHub
+            </button>
+
+            <div class="security-note">
+                <span>🔒 Conexión segura</span>
+                <br>
+                Tus credenciales están protegidas.
+            </div>
+
+        </div>
+
     </div>
 
     <script>
@@ -61,5 +325,6 @@
             window.location.href = '/dashboard.html';
         }
     </script>
+
 </body>
 </html>
